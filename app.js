@@ -30,10 +30,6 @@
   const list = (arr) => (Array.isArray(arr) ? arr : []);
   const str = (v) => (v == null ? '' : String(v));
 
-  /* ── 금액 ────────────────────────────── */
-  const won = (v) => (Number(v) || 0);
-  const fmt = (v) => (v === 0 ? '–' : v.toLocaleString('ko-KR'));
-
   /* ── 날짜 (한국 시간 기준) ──────────── */
   function todayKST() {
     return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
@@ -328,48 +324,6 @@
         h('td', { text: str(f.note) })
       );
     }));
-  }
-
-  // 합계 = 숙소 + KTX + 렌트카, 남은 금액 = 합계 − 기입금. 총계는 열별 합.
-  function computePayment(rows) {
-    const out = list(rows).map((r) => {
-      const stay = won(r.stay), ktx = won(r.ktx), car = won(r.car), paid = won(r.paid);
-      const total = stay + ktx + car;
-      return { name: str(r.name), memo: str(r.memo), stay, ktx, car, paid, total, left: total - paid };
-    });
-    const sum = (k) => out.reduce((a, r) => a + r[k], 0);
-    return { rows: out, totals: { stay: sum('stay'), ktx: sum('ktx'), car: sum('car'), total: sum('total'), paid: sum('paid'), left: sum('left') } };
-  }
-
-  function leftCell(left) {
-    if (left === 0) return h('td', { class: 'n done', text: '완료' });
-    if (left < 0) return h('td', { class: 'n over', text: `${(-left).toLocaleString('ko-KR')} 더 냄` });
-    return h('td', { class: 'n', text: fmt(left) });
-  }
-
-  function renderPayment(payment, treasurer) {
-    const { rows, totals } = computePayment(payment.rows);
-    $('money-to').textContent = treasurer ? `${treasurer}에게 보내기` : '';
-
-    fill('pay', rows.map((r) => h('tr', null,
-      h('th', { scope: 'row', class: 'nowrap' }, r.name, r.memo && h('span', { class: 'who', text: r.memo })),
-      h('td', { class: 'n', text: fmt(r.stay) }),
-      h('td', { class: 'n', text: fmt(r.ktx) }),
-      h('td', { class: 'n', text: fmt(r.car) }),
-      h('td', { class: 'n', text: fmt(r.total) }),
-      leftCell(r.left)
-    )));
-    fill('pay-total', h('tr', null,
-      h('td', { text: '총계' }),
-      ['stay', 'ktx', 'car', 'total', 'left'].map((k) => h('td', { class: 'n', text: fmt(totals[k]) }))
-    ));
-
-    const doneCount = rows.filter((r) => r.left <= 0).length;
-    fill('money-sum',
-      '받을 돈 ', h('b', { text: `${Math.max(totals.left, 0).toLocaleString('ko-KR')}원` }),
-      ` · 정산 끝난 사람 ${doneCount}/${rows.length}명`
-    );
-    $('pay-note').textContent = str(payment.note);
   }
 
   /* 할 일 체크: 각자 브라우저에만 저장. 항목 문구를 키로 써서 순서가 바뀌어도 체크가 따라간다. */
@@ -780,7 +734,6 @@
     renderStay(stay, data.travel, data.travelNote);
     renderFoods(data.foods);
     setupIdeas(data.ideas, list(trip.members).map(str));
-    renderPayment(data.payment || {}, trip.treasurer);
     renderTodos(data.todos, data.prep);
   }
 
@@ -799,12 +752,9 @@
       render(data);
       $('app').removeAttribute('aria-busy');
       watchMenu();
-      // 주소에 #money 같은 앵커가 있으면 그려진 뒤에 다시 이동
+      // 주소에 #plan 같은 앵커가 있으면 그려진 뒤에 다시 이동
       const target = location.hash && $(decodeURIComponent(location.hash.slice(1)));
       if (target) target.scrollIntoView();
     })
     .catch(showError);
-
-  // 테스트용으로 계산 함수만 노출
-  window.__trip = { computePayment };
 })();
