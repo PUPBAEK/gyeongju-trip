@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#135c4b">
+<title>경주 2박 3일</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23135c4b'/%3E%3Cpath d='M2 30 C6 18 14 18 18 30Z' fill='%23c9a865'/%3E%3Cpath d='M21 30 C20 24 22 16 23 12 H27 C28 16 30 24 29 30Z' fill='%230e2a23'/%3E%3Ccircle cx='10' cy='10' r='4' fill='%23fbe7b8'/%3E%3C/svg%3E">
+<meta property="og:title" content="경주 2박 3일">
+<meta property="og:description" content="일정 · 숙소 · 식당 · 정산 · 할 일을 한 페이지에">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pupbaek.github.io/gyeongju-trip/">
+<meta property="og:image" content="https://pupbaek.github.io/gyeongju-trip/assets/header-800.jpg">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="band top">
+  <div class="wrap top-grid">
+    <div class="top-title">
+      <p class="dday" id="dday" hidden></p>
+      <h1 id="title">경주 2박 3일</h1>
+      <p class="dates" id="dates"></p>
+    </div>
+    <figure class="hero">
+      <img src="assets/header.jpg"
+           srcset="assets/header-800.jpg 800w, assets/header.jpg 1400w"
+           sizes="(max-width: 760px) 100vw, 560px"
+           width="1400" height="1120" fetchpriority="high"
+           alt="‘은평천사원과 함께하는 겨울여행 in 경주’ 현수막 아래, 패딩을 입은 친구들이 펠트 인형으로 모여 있는 그림. 뒤로 첨성대와 기와 누각, 버스, 불국사·첨성대·경주월드 이정표가 보인다.">
+    </figure>
+    <dl class="facts" id="facts"></dl>
+  </div>
+</header>
+
+<svg class="scene" id="scene" role="img" aria-label="해질녘 왕릉 언덕과 첨성대, 달과 별 그림" preserveAspectRatio="none"></svg>
+
+<nav class="menu" id="menu" aria-label="섹션 메뉴">
+  <div class="menu-scroll">
+    <a href="#plan">일정</a>
+    <a href="#stay">숙소·이동</a>
+    <a href="#food">식당</a>
+    <a href="#ideas">의견</a>
+    <a href="#money">정산</a>
+    <a href="#todo">할 일</a>
+  </div>
+</nav>
+
+<div class="band" id="error" role="alert" hidden>
+  <div class="wrap error-box">
+    <p>일정 정보를 불러오지 못했어요. 새로고침해 주세요</p>
+    <button type="button" onclick="location.reload()">새로고침</button>
+  </div>
+</div>
+
+<main id="app" aria-busy="true">
+  <section class="band" id="plan" aria-labelledby="plan-h">
+    <div class="wrap">
+      <h2 id="plan-h">일정</h2>
+      <p class="legend">
+        <span><i class="dot" aria-hidden="true"></i>식사</span>
+        <span><span class="tag">태그</span> 미리 챙길 것</span>
+        <span><i class="ln-key car" aria-hidden="true"></i>렌트카</span>
+        <span><i class="ln-key taxi" aria-hidden="true"></i>택시</span>
+        <span><i class="ln-key walk" aria-hidden="true"></i>걸어서</span>
+      </p>
+      <div class="days" id="days"></div>
+    </div>
+  </section>
+
+  <section class="band tint" id="stay" aria-labelledby="stay-h">
+    <div class="wrap two">
+      <div>
+        <h2 id="stay-h">숙소</h2>
+        <article class="card solid">
+          <h3 id="stay-name"></h3>
+          <ul id="stay-notes"></ul>
+          <p class="card-link"><a id="stay-url" target="_blank" rel="noopener noreferrer">에어비앤비 숙소 페이지 열기 ↗</a></p>
+        </article>
+      </div>
+      <div>
+        <h2>누가 어떻게 오나</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">이름</th><th scope="col">가는 길</th><th scope="col">오는 길</th></tr></thead>
+          <tbody id="travel"></tbody>
+        </table></div>
+        <p class="note" id="travel-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="food" aria-labelledby="food-h">
+    <div class="wrap">
+      <h2 id="food-h">식당</h2>
+      <div class="table-wrap"><table class="foods">
+        <thead><tr><th scope="col">언제</th><th scope="col">식당</th><th scope="col" class="hide-s">위치</th><th scope="col">영업</th><th scope="col">주의</th></tr></thead>
+        <tbody id="foods"></tbody>
+      </table></div>
+      <p class="note">식당 이름을 누르면 네이버 지도에서 열려요. 영업시간은 지도 정보 기준이라 출발 전에 한 번 더 확인해 주세요.</p>
+    </div>
+  </section>
+
+  <section class="band" id="ideas" aria-labelledby="ideas-h">
+    <div class="wrap">
+      <h2 id="ideas-h">가고 싶은 곳 · 의견</h2>
+      <p class="lead">가보고 싶은 식당이나 장소, 일정에 대한 의견을 남겨 주세요. 남긴 글은 모두에게 보여요.</p>
+      <p class="mode-banner" id="ideas-mode" hidden></p>
+      <div class="ideas-grid">
+        <form class="card form" id="idea-form" novalidate>
+          <label class="field">
+            <span>나는</span>
+            <select id="idea-me" required><option value="">이름 고르기</option></select>
+          </label>
+          <fieldset class="field">
+            <legend>종류</legend>
+            <div class="chips" id="idea-kinds"></div>
+          </fieldset>
+          <label class="field">
+            <span>장소 · 제목</span>
+            <input id="idea-title" type="text" maxlength="60" required placeholder="예: 황남빵 본점 들르자" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>한마디 <em>선택</em></span>
+            <textarea id="idea-body" maxlength="300" rows="3" placeholder="왜 가고 싶은지, 언제 넣으면 좋을지"></textarea>
+          </label>
+          <label class="field">
+            <span>링크 <em>선택</em></span>
+            <input id="idea-url" type="url" inputmode="url" maxlength="500" placeholder="https://naver.me/…" autocomplete="off">
+          </label>
+          <div class="form-foot">
+            <p class="form-msg" id="idea-msg" role="status" aria-live="polite"></p>
+            <button type="submit" id="idea-submit">남기기</button>
+          </div>
+        </form>
+        <div>
+          <div class="idea-tools">
+            <div class="chips" id="idea-filter" role="group" aria-label="종류로 거르기"></div>
+            <label class="sort"><span class="sr-only">정렬</span>
+              <select id="idea-sort"><option value="new">최신순</option><option value="like">좋아요순</option></select>
+            </label>
+          </div>
+          <ul class="idea-list" id="idea-list" aria-live="polite"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tint" id="money" aria-labelledby="money-h">
+    <div class="wrap">
+      <h2 id="money-h">정산 <small id="money-to"></small></h2>
+      <p class="money-sum" id="money-sum"></p>
+      <div class="table-wrap"><table class="pay">
+        <thead><tr><th scope="col">이름</th><th scope="col" class="n">숙소</th><th scope="col" class="n">KTX</th><th scope="col" class="n">렌트카</th><th scope="col" class="n">합계</th><th scope="col" class="n">남은 금액</th></tr></thead>
+        <tbody id="pay"></tbody>
+        <tfoot id="pay-total"></tfoot>
+      </table></div>
+      <p class="note" id="pay-note"></p>
+    </div>
+  </section>
+
+  <section class="band" id="todo" aria-labelledby="todo-h">
+    <div class="wrap two">
+      <div>
+        <h2 id="todo-h">출발 전 할 일</h2>
+        <ul class="check" id="todos"></ul>
+        <p class="note" id="todo-note"></p>
+      </div>
+      <div>
+        <h2>날씨와 준비물</h2>
+        <article class="card">
+          <ul id="prep"></ul>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="band foot">
+  <div class="wrap" id="footer">경주 여행 · 문의는 총무 승일에게</div>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>
